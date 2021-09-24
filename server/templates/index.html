@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+<title>Upload new image</title>
+</head>
+<body>
+<h1>Upload new image</h1>
+<form action="/image" method="post" enctype="multipart/form-data">
+  Min confidence: <input type="text" name="min_confidence" value="50" size="5">%<br/>
+  Min area: <input type="text" name="min_area" value="5" size="1">%<br/>
+  Image: <input type="file" name="image"><br/>
+  <input type="submit" name="output" value="image">
+  <input type="submit" name="output" value="json">
+</form>
+</html>
+</body>

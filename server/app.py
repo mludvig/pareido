@@ -5,7 +5,7 @@ import json
 from io import BytesIO
 
 from PIL import Image
-from flask import Flask, request, Response, send_file
+from flask import Flask, request, Response, send_file, render_template
 
 from detect import detect, filter_detections, draw_detections
 
@@ -13,22 +13,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return """
-    <!doctype html>
-    <html>
-    <head>
-    <title>Upload new image</title>
-    </head>
-    <body>
-    <h1>Upload new image</h1>
-    <form action="/image" method="post" enctype="multipart/form-data">
-      Min confidence: <input type="text" name="min_confidence" value="50" size="5">%<br/>
-      Min area: <input type="text" name="min_area" value="5" size="1">%<br/>
-      Image: <input type="file" name="image"><br/>
-      <input type="submit" name="output" value="image">
-      <input type="submit" name="output" value="json">
-    </form>
-    """
+    return render_template("index.html")
 
 @app.route("/image", methods=["POST"])
 def image():
