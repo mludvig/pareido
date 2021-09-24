@@ -25,8 +25,13 @@ def index_post():
 
     results = []
     for _file in request.files:
-        # Open the image in PIL format
-        image = Image.open(request.files[_file]).convert("RGB")
+        try:
+            # Open the image in PIL format
+            image = Image.open(request.files[_file]).convert("RGB")
+        except Exception as e:
+            result = {"error": "Invalid or missing image"}
+            return Response(json.dumps(result), status=400, mimetype="application/json")
+
         # Time the detection
         start_ts = time.time()
         detections = detect(image)
