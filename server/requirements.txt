@@ -1,0 +1,7 @@
+gunicorn
+Flask
+Pillow
+
+openvino_person_detection_retail
+pycocotools
+modelplace-api[vis]
