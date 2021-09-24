@@ -12,15 +12,16 @@ from detect import detect, filter_detections, draw_detections
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
-def index():
+def index_get():
     return render_template("index.html")
 
-@app.route("/image", methods=["POST"])
-def image():
+@app.route("/", methods=["POST"])
+def index_post():
     # Find the parameters either in form data or in query args
     min_confidence = float(request.form.get('min_confidence', request.args.get('min_confidence', 0)))
     min_area = float(request.form.get('min_area', request.args.get('min_area', 0)))
     output = request.form.get('output', request.args.get('output', 'json'))
+    pretty_json = request.form.get('pretty_json', request.args.get('pretty_json', ''))
 
     results = []
     for _file in request.files:
@@ -47,7 +48,18 @@ def image():
             "detections": detections,
         })
 
-    return Response(json.dumps(results), mimetype="application/json")
+    dumps_kwargs = {}
+    if pretty_json:
+        dumps_kwargs = {
+            'indent': 2,
+            'sort_keys': True
+        }
+    else:
+        dumps_kwargs = {
+            'indent': None,
+            'separators': (',', ':'),
+        }
+    return Response(json.dumps(results, **dumps_kwargs), mimetype="application/json")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

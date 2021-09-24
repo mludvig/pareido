@@ -1,16 +1,32 @@
-<!doctype html>
 <html>
 <head>
-<title>Upload new image</title>
+    <title>Person Detector</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
 </head>
 <body>
-<h1>Upload new image</h1>
-<form action="/image" method="post" enctype="multipart/form-data">
-  Min confidence: <input type="text" name="min_confidence" value="50" size="5">%<br/>
-  Min area: <input type="text" name="min_area" value="5" size="1">%<br/>
-  Image: <input type="file" name="image"><br/>
-  <input type="submit" name="output" value="image">
-  <input type="submit" name="output" value="json">
+<header>
+    <h1>Person Detector</h1>
+</header>
+<form method="post" enctype="multipart/form-data">
+  <p>
+  <label>Min confidence (%)</label><br/>
+  <input type="text" name="min_confidence" value="50" size="5"/>
+  </p>
+  <p>
+  <label>Min area (%)</label><br/>
+  <input type="text" name="min_area" value="5" size="1"/>
+  </p>
+  <p>
+  <label>Select image</label><br/>
+  <input type="file" name="image"/>
+  </p>
+  <p>
+  <label>Display as ...</label><br/>
+  <input type="submit" name="output" value="image"/><br/>
+  <input type="submit" name="output" value="json"/><br/>
+  <label>Pretty JSON</label>
+  <input type="checkbox" name="pretty_json"/>
+  </p>
 </form>
-</html>
 </body>
+</html>
