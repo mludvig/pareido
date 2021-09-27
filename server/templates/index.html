@@ -21,10 +21,14 @@
   <input type="file" name="image"/>
   </p>
   <p>
-  <label>Display as ...</label><br/>
+  <label>Display as image</label><br/>
   <input type="submit" name="output" value="image"/><br/>
+  <label>Embed detections into EXIF</label>
+  <input type="checkbox" name="exif" checked/>
+  <hr>
+  <label>Display as JSON</label><br/>
   <input type="submit" name="output" value="json"/><br/>
-  <label>Pretty JSON</label>
+  <label>Pretty formatting</label>
   <input type="checkbox" name="pretty_output" checked/>
   </p>
 </form>

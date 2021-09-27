@@ -1,6 +1,7 @@
 gunicorn
 Flask
 Pillow
+exif
 
 ../packages/openvino_person_detection_retail-0.2.1+cpu-py3-none-any.whl
 pycocotools

@@ -7,7 +7,8 @@ from io import BytesIO
 from PIL import Image
 from flask import Flask, request, Response, send_file, render_template, redirect
 
-from detect import detect, filter_detections, draw_detections
+from detect import detect, filter_detections
+from tools import output_image, dump_json
 
 app = Flask(__name__)
 
@@ -22,10 +23,11 @@ def detect_get():
 @app.route("/detect", methods=["POST"])
 def detect_post():
     # Find the parameters either in form data or in query args
+    output = request.values.get('output', 'json')
     min_confidence = float(request.values.get('min_confidence', 0))
     min_area = float(request.values.get('min_area', 0))
-    output = request.values.get('output', 'json')
-    pretty_output = request.values.get('pretty_output', '')
+    pretty_output = bool(request.values.get('pretty_output', ''))
+    exif_detections = bool(request.values.get('exif', ''))
 
     results = []
     for _file in request.files:
@@ -39,35 +41,22 @@ def detect_post():
         # Time the detection
         start_ts = time.time()
         detections = detect(image)
-        elapsed_sec = time.time() - start_ts
+        elapsed_ms = (time.time() - start_ts)*1000
         detections = filter_detections(image, detections, min_confidence, min_area)
 
         # Draw the results if output == "image"
-        if output == "image":
-            image_new = draw_detections(image, detections)
-            image_buf = BytesIO()
-            image_new.save(image_buf, 'JPEG', quality=80)
-            image_buf.seek(0)
-            return send_file(image_buf, mimetype="image/jpeg")
+        if output in [ "image", "jpeg", "jpg" ]:
+            return send_file(output_image(image, detections, exif_detections), mimetype="image/jpeg")
 
         # Else send detections as JSON
         results.append({
             "filename": request.files[_file].filename,
-            "elapsed_sec": elapsed_sec,
+            "elapsed_ms": elapsed_ms,
             "detections": detections,
         })
 
-    dumps_kwargs = {}
-    if pretty_output:
-        dumps_kwargs = {
-            'indent': 2,
-        }
-    else:
-        dumps_kwargs = {
-            'indent': None,
-            'separators': (',', ':'),
-        }
-    return Response(json.dumps(results, **dumps_kwargs), mimetype="application/json")
+    dump_mode = 'pretty' if pretty_output else 'compact'
+    return Response(dump_json(results, dump_mode), mimetype="application/json")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="8000")
