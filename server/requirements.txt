@@ -2,6 +2,6 @@ gunicorn
 Flask
 Pillow
 
-openvino_person_detection_retail
+../packages/openvino_person_detection_retail-0.2.1+cpu-py3-none-any.whl
 pycocotools
 modelplace-api[vis]

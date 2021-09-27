@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # OpenVINO setup from ~/.bashrc
 source ${INTEL_OPENVINO_DIR}/bin/setupvars.sh
@@ -10,4 +10,4 @@ export GST_VAAPI_ALL_DRIVERS=1
 source $HOME/venv/bin/activate
 
 cd server
-gunicorn app:app --bind 0.0.0.0 "$@"
+gunicorn app:app --bind 0.0.0.0 --workers $(nproc) --access-logfile - "$@"
