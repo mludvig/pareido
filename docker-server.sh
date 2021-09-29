@@ -1,6 +1,4 @@
-#!/bin/bash -e
-
-# This is a helper script that must be run from the Pareido docker container!
+#!/bin/bash
 
 # OpenVINO setup from ~/.bashrc
 source ${INTEL_OPENVINO_DIR}/bin/setupvars.sh
@@ -11,5 +9,4 @@ export GST_VAAPI_ALL_DRIVERS=1
 # Python virtualenv setup
 source $HOME/venv/bin/activate
 
-export FLASK_ENV=development
-python3 app.py
+gunicorn src:app --bind 0.0.0.0 --workers $(nproc) --access-logfile - "$@"

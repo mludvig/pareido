@@ -6,8 +6,8 @@ import json
 from PIL import Image
 from flask import Flask, request, Response, send_file, render_template, redirect
 
-from detect import detect, filter_detections
-from tools import output_image, dump_json
+from .detect import detect, filter_detections
+from .tools import output_image, dump_json
 
 app = Flask(__name__)
 
