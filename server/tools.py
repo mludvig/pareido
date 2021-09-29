@@ -13,7 +13,7 @@ def output_image(image, detections, embed_exif=True):
 
     if embed_exif:
         image_exif = exif.Image(image_buf)
-        image_exif['software'] = 'Pareidos - https://github.com/mludvig/pareidos'
+        image_exif['software'] = 'Pareido - https://github.com/mludvig/pareido'
         user_comment = dump_json(detections, mode='compact', decimals=2)
         image_exif['user_comment'] = f"{user_comment:4s}"   # Need at least 4 chars - otherwise 'exif' crashes
         image_buf = BytesIO()
