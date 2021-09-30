@@ -31,7 +31,7 @@ def output_image(image, detections, embed_exif=True):
 def draw_detections(image, detections):
     line_width = 2
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype(f"{SCRIPT_DIR}/FreeMono.ttf", 15)
+    font = ImageFont.truetype(f"{SCRIPT_DIR}/fonts/FreeMono.ttf", 15)
     for d in detections:
         rect = (d["x1"], d["y1"], d["x2"], d["y2"])
         draw.rectangle(rect, outline="lightgreen", width=line_width)
