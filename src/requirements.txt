@@ -1,8 +1,10 @@
+# Project dependencies
 gunicorn
 Flask
 Pillow
 exif
+loguru
 
-../packages/openvino_person_detection_retail-0.2.1+cpu-py3-none-any.whl
+# Modelplace dependencies
 pycocotools
 modelplace-api[vis]

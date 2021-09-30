@@ -6,7 +6,7 @@ import json
 from PIL import Image
 from flask import Flask, request, Response, send_file, render_template, redirect
 
-from .detect import detect, filter_detections
+from .detect import detect, filter_detections, models
 from .tools import output_image, dump_json
 
 app = Flask(__name__)
@@ -14,7 +14,11 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index_get():
-    return render_template("index.html")
+    active_models = [
+        {"name": models[model_slug]["name"], "slug": models[model_slug]["slug"]}
+        for model_slug in models.keys()
+    ]
+    return render_template("index.html", models=active_models)
 
 
 @app.route("/detect", methods=["GET"])
@@ -30,6 +34,7 @@ def detect_post():
     min_area = float(request.values.get("min_area", 0))
     pretty_output = bool(request.values.get("pretty_output", ""))
     exif_detections = bool(request.values.get("exif", ""))
+    model_slug = request.values.get("model", "pvb")
 
     results = []
     for _file in request.files:
@@ -42,7 +47,7 @@ def detect_post():
 
         # Time the detection
         start_ts = time.time()
-        detections = detect(image)
+        detections = detect(model_slug, image)
         elapsed_ms = (time.time() - start_ts) * 1000
         detections = filter_detections(image, detections, min_confidence, min_area)
 

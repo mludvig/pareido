@@ -17,6 +17,12 @@
   <input type="text" name="min_area" value="1" size="1"/>
   </p>
   <p>
+  <label>Model</label><br/>
+  {% for model in models %}
+    <input type="radio" name="model" value="{{model.slug}}"/>{{model.name}}<br/>
+  {% endfor %}
+  </p>
+  <p>
   <label>Select image</label><br/>
   <input type="file" name="image"/>
   </p>

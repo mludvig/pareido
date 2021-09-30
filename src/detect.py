@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 
-from openvino_person_detection_retail import InferenceModel  # import the AI Model
+import importlib
+from loguru import logger
 from modelplace_api import Device
 
-model = InferenceModel()  # Load once
-model.model_load(Device.cpu)
+from .known_models import known_models
+
+models = {}
+
+for model in known_models:
+    try:
+        _module = importlib.import_module(model["module_name"])
+        model["inference"] = _module.InferenceModel()
+        model["inference"].model_load(Device.cpu)
+        models[model["slug"]] = model
+        logger.info(f"Loaded model: {model['name']}")
+    except ModuleNotFoundError as e:
+        logger.warning(f"Ignoring model: {model['name']} [module '{e.name}' not found]")
 
 
-def detect(image):
-    detections = model.process_sample(image)
+def detect(model_slug, image):
+    detections = models[model_slug]["inference"].process_sample(image)
     return detections
 
 

@@ -22,4 +22,3 @@ scipy==1.7.1
 six==1.16.0
 sk-video==1.1.10
 Werkzeug==2.0.1
-./packages/openvino_person_detection_retail-0.2.1+cpu-py3-none-any.whl
