@@ -4,15 +4,15 @@ import time
 import json
 
 from PIL import Image
-from flask import Flask, request, Response, send_file, render_template, redirect
+from flask import Blueprint, request, Response, send_file, render_template, redirect
 
-from .detect import detect, filter_detections, models
+from .models import detect, filter_detections, models
 from .tools import output_image, dump_json
 
-app = Flask(__name__)
+bp = Blueprint('pareido', __name__)
 
 
-@app.route("/", methods=["GET"])
+@bp.route("/", methods=["GET"])
 def index_get():
     active_models = [
         {"name": models[model_slug]["name"], "slug": models[model_slug]["slug"]}
@@ -21,12 +21,12 @@ def index_get():
     return render_template("index.html", models=active_models)
 
 
-@app.route("/detect", methods=["GET"])
+@bp.route("/detect", methods=["GET"])
 def detect_get():
     return redirect("/", code=302)
 
 
-@app.route("/detect", methods=["POST"])
+@bp.route("/detect", methods=["POST"])
 def detect_post():
     # Find the parameters either in form data or in query args
     output = request.values.get("output", "json")
@@ -68,7 +68,3 @@ def detect_post():
 
     dump_mode = "pretty" if pretty_output else "compact"
     return Response(dump_json(results, dump_mode), mimetype="application/json")
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="8000")

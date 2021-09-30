@@ -8,15 +8,16 @@ from .known_models import known_models
 
 models = {}
 
-for model in known_models:
-    try:
-        _module = importlib.import_module(model["module_name"])
-        model["inference"] = _module.InferenceModel()
-        model["inference"].model_load(Device.cpu)
-        models[model["slug"]] = model
-        logger.info(f"Loaded model: {model['name']}")
-    except ModuleNotFoundError as e:
-        logger.warning(f"Ignoring model: {model['name']} [module '{e.name}' not found]")
+def load_models():
+    for model in known_models:
+        try:
+            _module = importlib.import_module(model["module_name"])
+            model["inference"] = _module.InferenceModel()
+            model["inference"].model_load(Device.cpu)
+            models[model["slug"]] = model
+            logger.info(f"Loaded model: {model['name']}")
+        except ModuleNotFoundError as e:
+            logger.warning(f"Ignoring model: {model['name']} [module '{e.name}' not found]")
 
 
 def detect(model_slug, image):
