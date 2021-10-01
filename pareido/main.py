@@ -6,7 +6,7 @@ import json
 from PIL import Image
 from flask import Blueprint, request, Response, send_file, render_template, redirect
 
-from .models import detect, filter_detections, models
+from .models import detect, filter_detections, models, get_active_models
 from .tools import output_image, dump_json
 
 bp = Blueprint('pareido', __name__)
@@ -14,12 +14,13 @@ bp = Blueprint('pareido', __name__)
 
 @bp.route("/", methods=["GET"])
 def index_get():
-    active_models = [
-        {"name": models[model_slug]["name"], "slug": models[model_slug]["slug"]}
-        for model_slug in models.keys()
-    ]
-    return render_template("index.html", models=active_models)
+    return render_template("index.html", models=get_active_models())
 
+
+@bp.route("/models", methods=["GET"])
+def models_get():
+    active_models = get_active_models()
+    return Response(json.dumps(active_models, indent=2), mimetype="application/json")
 
 @bp.route("/detect", methods=["GET"])
 def detect_get():
@@ -32,9 +33,13 @@ def detect_post():
     output = request.values.get("output", "json")
     min_confidence = float(request.values.get("min_confidence", 0))
     min_area = float(request.values.get("min_area", 0))
-    pretty_output = bool(request.values.get("pretty_output", ""))
+    pretty_output = bool(request.values.get("pretty", ""))
     exif_detections = bool(request.values.get("exif", ""))
     model_slug = request.values.get("model", "pvb")
+
+    if model_slug not in models:
+        result = {"error": "Unknown model"}
+        return Response(json.dumps(result), status=400, mimetype="application/json")
 
     results = []
     for _file in request.files:
@@ -62,6 +67,7 @@ def detect_post():
             {
                 "filename": request.files[_file].filename,
                 "elapsed_ms": elapsed_ms,
+                "model": model_slug,
                 "detections": detections,
             }
         )

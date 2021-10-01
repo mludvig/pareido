@@ -43,3 +43,11 @@ def filter_detections(image, detections, min_score, min_area):
             continue
         out.append(detection)
     return out
+
+
+def get_active_models():
+    return [
+        {"slug": models[model_slug]["slug"], "name": models[model_slug]["name"], "url": models[model_slug]["url"]}
+        for model_slug in models.keys()
+    ]
+

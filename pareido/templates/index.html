@@ -2,11 +2,20 @@
 <head>
     <title>Pareido - image recognizer</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
+    <style>
+    <!--
+    a {
+      text-decoration: none;
+    }
+    -->
+    </style>
 </head>
 <body>
 <header>
-    <h1>Pareido - image recognizer</h1>
+    <h1>Pareido</h1>
+    <p>Image recognition / Object detection</p>
 </header>
+<main>
 <form action="/detect" method="post" enctype="multipart/form-data">
   <p>
   <label>Min confidence (%)</label><br/>
@@ -19,7 +28,7 @@
   <p>
   <label>Model</label><br/>
   {% for model in models %}
-    <input type="radio" name="model" value="{{model.slug}}"/>{{model.name}}<br/>
+    <label><input type="radio" name="model" value="{{model.slug}}"/>{{model.name}}</label> <sup style="font-size: 50%"><a href="{{model.url}}">⇗</a></sup><br/>
   {% endfor %}
   </p>
   <p>
@@ -35,8 +44,12 @@
   <label>Display as JSON</label><br/>
   <input type="submit" name="output" value="json"/><br/>
   <label>Pretty formatting</label>
-  <input type="checkbox" name="pretty_output" checked/>
+  <input type="checkbox" name="pretty" checked/>
   </p>
 </form>
+</main>
+<footer>
+  <p>Created by <a href="https://github.com/mludvig/pareido">Michael Ludvig</a>. Powered by <a href="https://modelplace.ai">modelplace.ai</a> models.</p>
+</footer>
 </body>
 </html>

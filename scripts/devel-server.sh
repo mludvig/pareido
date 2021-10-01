@@ -13,6 +13,9 @@ if [ $(id -un) == "openvino" ]; then
   # Python virtualenv setup
   source $HOME/venv/bin/activate
 
+  # Don't exit on error
+  set +e
+
   export FLASK_ENV=development
   export FLASK_APP=pareido
   while (true) do
