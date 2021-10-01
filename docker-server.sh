@@ -9,4 +9,4 @@ export GST_VAAPI_ALL_DRIVERS=1
 # Python virtualenv setup
 source $HOME/venv/bin/activate
 
-gunicorn src:app --bind 0.0.0.0 --workers $(nproc) --access-logfile - "$@"
+gunicorn pareido:app --bind 0.0.0.0 --workers $(nproc) --access-logfile - "$@"

@@ -16,16 +16,16 @@ RUN \
   rm -rf $HOME/.cache
 
 ADD --chown=openvino packages packages
-ADD --chown=openvino src/known_models.py src/
+ADD --chown=openvino pareido/known_models.py pareido/
 RUN \
   source venv/bin/activate && \
-  for MODEL in $(python src/known_models.py); \
+  for MODEL in $(python pareido/known_models.py); \
   do \
     pip3 install packages/${MODEL}-*.whl || true; \
   done && \
   rm -rf $HOME/packages
 
 # Add the rest of the source code
-ADD --chown=openvino src src
+ADD --chown=openvino pareido pareido
 
 CMD "./docker-server.sh"

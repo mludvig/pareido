@@ -14,8 +14,9 @@ if [ $(id -un) == "openvino" ]; then
   source $HOME/venv/bin/activate
 
   export FLASK_ENV=development
+  export FLASK_APP=pareido
   while (true) do
-    python3 -m src.app
+    flask run --host 0.0.0.0 --port 8000 --eager-loading
     echo "=== Press ^C to exit in the next 5 sec ==="
     sleep 5
   done
