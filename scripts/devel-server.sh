@@ -23,5 +23,8 @@ if [ $(id -un) == "openvino" ]; then
 else
   ## This section runs if not inside the docker container
   docker build -t pareido:local .
-  docker run --name pareido --rm -it -p 8000:8000 -v $(pwd):/local -w /local pareido:local ./devel-server.sh "$@"
+  docker run --name pareido --rm -it -p 8000:8000 \
+    -v $(pwd)/scripts:/home/openvino/scripts \
+    -v $(pwd)/pareido:/home/openvino/pareido \
+    -w /home/openvino pareido:local scripts/devel-server.sh "$@"
 fi

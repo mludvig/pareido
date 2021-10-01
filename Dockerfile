@@ -1,13 +1,7 @@
-FROM openvino/ubuntu20_runtime:2021.4.1
-
-MAINTAINER Michael Ludvig (https://github.com/mludvig)
+FROM openvino/ubuntu20_runtime:2021.4.1 AS builder
 
 WORKDIR /home/openvino
-RUN echo "source venv/bin/activate" >> .bashrc
-
-EXPOSE 8000
-
-ADD --chown=openvino docker-server.sh requirements-frozen.txt ./
+ADD --chown=openvino requirements-frozen.txt ./
 RUN \
   python3 -m venv venv && \
   source venv/bin/activate && \
@@ -25,7 +19,22 @@ RUN \
   done && \
   rm -rf $HOME/packages
 
-# Add the rest of the source code
+
+###
+FROM openvino/ubuntu20_runtime:2021.4.1
+
+MAINTAINER Michael Ludvig (https://github.com/mludvig)
+
+WORKDIR /home/openvino
+RUN echo "source venv/bin/activate" >> .bashrc
+
+EXPOSE 8000
+
+COPY --from=builder --chown=openvino /home/openvino/venv ./venv
+
+ADD --chown=openvino scripts ./scripts
+
+# Add the source code
 ADD --chown=openvino pareido pareido
 
-CMD "./docker-server.sh"
+CMD "scripts/docker-server.sh"
