@@ -1,16 +1,16 @@
 # fmt: off
 known_models = [
     {
-        "name": "Person detection",
-        "slug": "person",
-        "module_name": "openvino_person_detection_retail",
-        "url": "https://modelplace.ai/models/17",
-    },
-    {
         "name": "Person Vehicle Bike",
         "slug": "pvb",
         "module_name": "openvino_person_vehicle_bike_detection_crossroad",
         "url": "https://modelplace.ai/models/19",
+    },
+    {
+        "name": "Person detection",
+        "slug": "person",
+        "module_name": "openvino_person_detection_retail",
+        "url": "https://modelplace.ai/models/17",
     },
     {
         "name": "Pedestrian detection",

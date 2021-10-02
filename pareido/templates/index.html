@@ -24,7 +24,9 @@
   <p>
   <label class="bold">Available models</label><br/>
   {% for model in models %}
-    <label><input type="radio" name="model" value="{{model.slug}}"/>{{model.name}}</label> <sup style="font-size: 60%"><a href="{{model.url}}" title="Model website">Ⓦ</a></sup><br/>
+    <label><input type="radio" name="model" value="{{model.slug}}"
+      {% if loop.index == 1 %}checked{% endif %}/>{{model.name}}</label>
+    <sup style="font-size: 60%"><a href="{{model.url}}" title="Model website">Ⓦ</a></sup><br/>
   {% endfor %}
   </p>
   <p>
