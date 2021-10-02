@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import warnings
 import importlib
 from loguru import logger
 from modelplace_api import Device
@@ -11,7 +12,9 @@ models = {}
 def load_models():
     for model in known_models:
         try:
-            _module = importlib.import_module(model["module_name"])
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=DeprecationWarning)
+                _module = importlib.import_module(model["module_name"])
             model["inference"] = _module.InferenceModel()
             model["inference"].model_load(Device.cpu)
             models[model["slug"]] = model
