@@ -9,4 +9,9 @@ export GST_VAAPI_ALL_DRIVERS=1
 # Python virtualenv setup
 source $HOME/venv/bin/activate
 
-gunicorn 'pareido:create_app()' --bind 0.0.0.0 --workers $(nproc) --access-logfile -
+if [ -z "${GUNICORN_ARGS}" ]; then
+  # Default gunicorn args. Can be overriden by env var
+  GUNICORN_ARGS="--workers $(nproc) --access-logfile - --timeout 120"
+fi
+
+gunicorn 'pareido:create_app()' --bind 0.0.0.0 ${GUNICORN_ARGS}
