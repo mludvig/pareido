@@ -1,11 +1,15 @@
 <html>
 <head>
     <title>Pareido - image recognizer</title>
+    <link href="/static/favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"/>
     <style>
     <!--
     a {
       text-decoration: none;
+    }
+    .bold {
+      font-weight: bold;
     }
     -->
     </style>
@@ -18,6 +22,12 @@
 <main>
 <form action="/detect" method="post" enctype="multipart/form-data">
   <p>
+  <label class="bold">Available models</label><br/>
+  {% for model in models %}
+    <label><input type="radio" name="model" value="{{model.slug}}"/>{{model.name}}</label> <sup style="font-size: 60%"><a href="{{model.url}}" title="Model website">Ⓦ</a></sup><br/>
+  {% endfor %}
+  </p>
+  <p>
   <label>Min confidence (%)</label><br/>
   <input type="text" name="min_confidence" value="50" size="5"/>
   </p>
@@ -26,25 +36,23 @@
   <input type="text" name="min_area" value="1" size="1"/>
   </p>
   <p>
-  <label>Model</label><br/>
-  {% for model in models %}
-    <label><input type="radio" name="model" value="{{model.slug}}"/>{{model.name}}</label> <sup style="font-size: 50%"><a href="{{model.url}}">⇗</a></sup><br/>
-  {% endfor %}
-  </p>
-  <p>
-  <label>Select image</label><br/>
+  <label class="bold">Select image</label><br/>
   <input type="file" name="image"/>
   </p>
   <p>
-  <label>Display as image</label><br/>
+  <label class="bold">Display as image</label><br/>
   <input type="submit" name="output" value="image"/><br/>
-  <label>Embed detections into EXIF</label>
-  <input type="checkbox" name="exif" checked/>
+  <label>
+    <input type="checkbox" name="exif" checked/>
+    Embed detections into EXIF
+  </label>
   <hr>
-  <label>Display as JSON</label><br/>
+  <label class="bold">Display as JSON</label><br/>
   <input type="submit" name="output" value="json"/><br/>
-  <label>Pretty formatting</label>
-  <input type="checkbox" name="pretty" checked/>
+  <label>
+    <input type="checkbox" name="pretty" checked/>
+    Pretty formatting
+  </label>
   </p>
 </form>
 </main>
