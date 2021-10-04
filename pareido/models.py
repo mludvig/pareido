@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import warnings
 import importlib
 from loguru import logger
@@ -10,7 +11,19 @@ from .known_models import known_models
 models = {}
 
 def load_models():
+    only_models = exclude_models = []
+    if os.getenv("PAREIDO_MODELS"):
+        only_models = os.getenv("PAREIDO_MODELS").split(",")
+    if os.getenv("PAREIDO_MODELS_EXCLUDE"):
+        exclude_models = os.getenv("PAREIDO_MODELS_EXCLUDE").split(",")
+
     for model in known_models:
+        if only_models and not model['slug'] in only_models:
+            logger.warning(f"Excluded model: {model['name']} [{model['slug']} is not in $PAREIDO_MODELS]")
+            continue
+        if model['slug'] in exclude_models:
+            logger.warning(f"Excluded model: {model['name']} [{model['slug']} is in $PAREIDO_MODELS_EXCLUDE]")
+            continue
         try:
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -18,9 +31,16 @@ def load_models():
             model["inference"] = _module.InferenceModel()
             model["inference"].model_load(Device.cpu)
             models[model["slug"]] = model
-            logger.info(f"Loaded model: {model['name']}")
+            logger.info(f"Loaded model: {model['name']} [{model['slug']}]")
         except ModuleNotFoundError as e:
-            logger.warning(f"Ignoring model: {model['name']} [module '{e.name}' not found]")
+            logger.warning(f"Ignored model: {model['name']} [module '{e.name}' not found]")
+
+
+def get_active_models():
+    return [
+        {"slug": models[model_slug]["slug"], "name": models[model_slug]["name"], "url": models[model_slug]["url"]}
+        for model_slug in models.keys()
+    ]
 
 
 def detect(model_slug, image):
@@ -46,11 +66,3 @@ def filter_detections(image, detections, min_score, min_area):
             continue
         out.append(detection)
     return out
-
-
-def get_active_models():
-    return [
-        {"slug": models[model_slug]["slug"], "name": models[model_slug]["name"], "url": models[model_slug]["url"]}
-        for model_slug in models.keys()
-    ]
-
