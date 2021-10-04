@@ -13,7 +13,9 @@ MarkupSafe==2.0.1
 matplotlib==3.4.3
 numpy==1.21.2
 opencv-python==4.5.3.56
+opencv-python-headless==4.2.0.34
 Pillow==8.3.2
+plum-py==0.7.0
 pycocotools==2.0.2
 pydantic==1.5.1
 pyparsing==2.4.7
