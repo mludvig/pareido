@@ -20,7 +20,7 @@ known_models = [
     },
     {
         "name": "MobileNet SSD",
-        "slug": "mobilenet",
+        "slug": "mobilenetssd",
         "module_name": "openvino_mobilenet_ssd",
         "url": "https://modelplace.ai/models/26",
     },
