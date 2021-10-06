@@ -9,7 +9,7 @@ from flask import Blueprint, request, Response, send_file, render_template, redi
 from .models import detect, filter_detections, models, get_active_models
 from .tools import output_image, dump_json
 
-bp = Blueprint('pareido', __name__)
+bp = Blueprint("pareido", __name__)
 
 
 @bp.route("/", methods=["GET"])
@@ -21,6 +21,7 @@ def index_get():
 def models_get():
     active_models = get_active_models()
     return Response(json.dumps(active_models, indent=2), mimetype="application/json")
+
 
 @bp.route("/detect", methods=["GET"])
 def detect_get():

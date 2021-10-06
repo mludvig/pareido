@@ -10,6 +10,7 @@ from .known_models import known_models
 
 models = {}
 
+
 def load_models():
     only_models = exclude_models = []
     if os.getenv("PAREIDO_MODELS"):
@@ -18,11 +19,15 @@ def load_models():
         exclude_models = os.getenv("PAREIDO_MODELS_EXCLUDE").split(",")
 
     for model in known_models:
-        if only_models and not model['slug'] in only_models:
-            logger.warning(f"Excluded model: {model['name']} [{model['slug']} is not in $PAREIDO_MODELS]")
+        if only_models and not model["slug"] in only_models:
+            logger.warning(
+                f"Excluded model: {model['name']} [{model['slug']} is not in $PAREIDO_MODELS]"
+            )
             continue
-        if model['slug'] in exclude_models:
-            logger.warning(f"Excluded model: {model['name']} [{model['slug']} is in $PAREIDO_MODELS_EXCLUDE]")
+        if model["slug"] in exclude_models:
+            logger.warning(
+                f"Excluded model: {model['name']} [{model['slug']} is in $PAREIDO_MODELS_EXCLUDE]"
+            )
             continue
         try:
             with warnings.catch_warnings():
@@ -33,12 +38,18 @@ def load_models():
             models[model["slug"]] = model
             logger.info(f"Loaded model: {model['name']} [{model['slug']}]")
         except ModuleNotFoundError as e:
-            logger.warning(f"Ignored model: {model['name']} [module '{e.name}' not found]")
+            logger.warning(
+                f"Ignored model: {model['name']} [module '{e.name}' not found]"
+            )
 
 
 def get_active_models():
     return [
-        {"slug": models[model_slug]["slug"], "name": models[model_slug]["name"], "url": models[model_slug]["url"]}
+        {
+            "slug": models[model_slug]["slug"],
+            "name": models[model_slug]["name"],
+            "url": models[model_slug]["url"],
+        }
         for model_slug in models.keys()
     ]
 
