@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+IMAGE=pareido:small
+
 # This is a helper script that must be run from the Pareido docker container!
 if [ $(id -un) == "openvino" ]; then
   ## This section runs inside the docker container
@@ -25,9 +27,10 @@ if [ $(id -un) == "openvino" ]; then
   done
 else
   ## This section runs if not inside the docker container
-  docker build -t pareido:local .
   docker run --name pareido --rm -it -p 8000:8000 \
     -v $(pwd)/scripts:/home/openvino/scripts \
     -v $(pwd)/pareido:/home/openvino/pareido \
-    -w /home/openvino pareido:local scripts/devel-server.sh "$@"
+    -e PAREIDO_MODELS=${PAREIDO_MODELS} \
+    -e PAREIDO_MODELS_EXCLUDE=${PAREIDO_MODELS_EXCLUDE} \
+    -w /home/openvino ${IMAGE} scripts/devel-server.sh "$@"
 fi

@@ -10,10 +10,11 @@ RUN \
   pip3 install -r requirements-frozen.txt && \
   rm -rf $HOME/.cache
 
-ADD --chown=openvino pareido/known_models.py pareido/
+ARG MODELS_TXT=models-small.txt
+ADD ${MODELS_TXT} ./
 RUN \
   source venv/bin/activate && \
-  pip3 install $(python pareido/known_models.py) \
+  pip3 install -r ${MODELS_TXT} \
     -f https://modelplace.s3.amazonaws.com/index.html \
     -f https://download.pytorch.org/whl/torch_stable.html
 

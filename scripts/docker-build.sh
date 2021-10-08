@@ -1,21 +1,20 @@
 #!/bin/bash -e
 
+# Usage:
+#
+# - Run: docker-build.sh [models-xyz.txt]
+#
+# - Build docker image with models specified in models-xyz.txt file
+#   if no file is specified use all the models-*.txt files present
+#   in the project root directory.
+
 PROJECT_NAME=pareido
-ECR_BASE=public.ecr.aws/h6h2b6z5
 
-docker build -t ${PROJECT_NAME}:local .
+MODELS_TXTS=${1:-$(ls -1 models-*.txt)}
 
-echo
-echo -n "Push to ECR? [Enter/^C] "
-read
+for FILE in ${MODELS_TXTS}; do
+  TAG=$(basename $FILE .txt | cut -d- -f2-)
+  echo docker build --build-arg MODELS_TXT=${FILE} --tag ${PROJECT_NAME}:${TAG} .
+done
 
-if [ -z "${AWS_PROFILE}" ]; then
-  echo "Set AWS_PROFILE please" >&2
-  exit 1
-fi
-export AWS_PROFILE
-
-set -x
-aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_BASE}
-docker tag ${PROJECT_NAME}:local ${ECR_BASE}/${PROJECT_NAME}:latest
-docker push ${ECR_BASE}/${PROJECT_NAME}:latest
+echo "Container images were built, you can run scripts/docker-push.sh"
