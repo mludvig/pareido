@@ -4,15 +4,38 @@ import os
 import json
 from io import BytesIO
 import exif
-from PIL import ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 SCRIPT_DIR = os.path.dirname(__file__)
 
 
-def output_image(image, detections, embed_exif=True):
-    image_new = draw_detections(image, detections)
+def resize_image(image, max_size):
+    if image.width <= max_size[0] and image.height <= max_size[1]:
+        return image
+
+    if image.width/image.height < max_size[0]/max_size[1]:
+        # resize by height
+        ratio = image.height/max_size[1]
+    else:
+        # resize by width
+        ratio = image.width/max_size[0]
+    new_size = (
+        int(image.width / ratio),
+        int(image.height / ratio)
+    )
+    image = image.resize(new_size, Image.BICUBIC)
+    return image
+
+
+def output_image(image, detections, embed_exif=False, max_size=(1024, 1024)):
+    if max_size:
+        det_rel = detections_absolute2relative(image, detections)
+        image = resize_image(image, max_size)
+        detections = detections_relative2absolute(image, detections)
+
+    image = draw_detections(image, detections)
     image_buf = BytesIO()
-    image_new.save(image_buf, "JPEG", quality=80)
+    image.save(image_buf, "JPEG", quality=80)
     image_buf.seek(0)
 
     if embed_exif:
@@ -29,17 +52,31 @@ def output_image(image, detections, embed_exif=True):
 
 
 def draw_detections(image, detections):
+    colours = ["lightgreen", "lightblue", "yellow", "pink", "orange" ]
+    label_colours = {}
+
     line_width = 2
     draw = ImageDraw.Draw(image)
     font = ImageFont.truetype(f"{SCRIPT_DIR}/fonts/FreeMono.ttf", 15)
     for d in detections:
-        rect = (d["x1"], d["y1"], d["x2"], d["y2"])
-        draw.rectangle(rect, outline="lightgreen", width=line_width)
+        # Pick a colour
+        if d['class_name'] not in label_colours:
+            try:
+                colour = colours.pop(0)
+            except IndexError:
+                colour = "white"
+            label_colours[d['class_name']] = colour
+        else:
+            colour = label_colours[d['class_name']]
 
-        text = f"{d['score']:.1f}%"
+        # Bounding box
+        rect = (d["x1"], d["y1"], d["x2"], d["y2"])
+        draw.rectangle(rect, outline=colour, width=line_width)
+        # Label + Score
+        text = f"{d['class_name']} {d['score']:.1f}%"
         text_size = font.getsize(text)
         if d["y1"] < text_size[1]:
-            # place label above detection
+            # place score above detection
             text_rect = (
                 d["x1"] + line_width,
                 d["y1"] + line_width,
@@ -54,8 +91,9 @@ def draw_detections(image, detections):
                 d["x1"] + text_size[0],
                 d["y1"] - 1,
             )
-        draw.rectangle(text_rect, outline="yellow", fill="yellow")
+        draw.rectangle(text_rect, outline=colour, fill=colour)
         draw.text(text_rect[:2], text, fill="black", font=font)
+
     return image
 
 
@@ -77,4 +115,26 @@ def dump_json(data, mode="pretty", decimals=None):
             json.loads(out, parse_float=lambda x: round(float(x), decimals)),
             **dumps_kwargs,
         )
+    return out
+
+
+def detections_absolute2relative(image, detections):
+    out = []
+    for detection in detections:
+        detection["x1"] /= image.width
+        detection["x2"] /= image.width
+        detection["y1"] /= image.height
+        detection["y2"] /= image.height
+        out.append(detection)
+    return out
+
+
+def detections_relative2absolute(image, detections):
+    out = []
+    for detection in detections:
+        detection["x1"] = int(detection["x1"] * image.width)
+        detection["x2"] = int(detection["x2"] * image.width)
+        detection["y1"] = int(detection["y1"] * image.height)
+        detection["y2"] = int(detection["y2"] * image.height)
+        out.append(detection)
     return out
