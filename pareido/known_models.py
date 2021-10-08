@@ -1,5 +1,6 @@
 # fmt: off
 known_models = [
+    ## Person detection
     {
         "name": "Person Vehicle Bike",
         "slug": "pvb",
@@ -18,6 +19,40 @@ known_models = [
         "module_name": "openvino_pedestrian_detection_adas",
         "url": "https://modelplace.ai/models/18",
     },
+    ## Face detection
+    {
+        "name": "Face detection",
+        "slug": "face",
+        "module_name": "openvino_face_detection_retail",
+        "url": "https://modelplace.ai/models/16",
+    },
+    {
+        "name": "Face Detector (Adas)",
+        "slug": "faceadas",
+        "module_name": "openvino_face_detection_adas",
+        "url": "https://modelplace.ai/models/13",
+    },
+    ## Vehicle detection
+    {
+        "name": "Vehicle Detector (Adas)",
+        "slug": "vehicle",
+        "module_name": "openvino_vehicle_detection_adas",
+        "url": "https://modelplace.ai/models/20",
+    },
+    {
+        "name": "Vehicle License Detector",
+        "slug": "vehiclelicense",
+        "module_name": "openvino_vehicle_license_plate_detection_barrier",
+        "url": "https://modelplace.ai/models/22",
+    },
+    ## General object detection
+    {
+        "name": "Faster R-CNN ResNet-50",
+        "slug": "fasterrcnn",
+        "module_name": "pytorch_fastercnn",
+        "url": "https://modelplace.ai/models/2",
+        "note": "pip3 install pytorch_fastercnn/torch_stable.html",
+    },
     {
         "name": "MobileNet SSD",
         "slug": "mobilenetssd",
@@ -31,12 +66,6 @@ known_models = [
         "url": "https://modelplace.ai/models/3",
     },
     {
-        "name": "Face detection",
-        "slug": "face",
-        "module_name": "openvino_face_detection_retail",
-        "url": "https://modelplace.ai/models/16",
-    },
-    {
         "name": "YOLO v3",
         "slug": "yolov3",
         "module_name": "openvino_yolo_v3",
@@ -48,12 +77,13 @@ known_models = [
         "module_name": "openvino_tiny_yolo_v3",
         "url": "https://modelplace.ai/models/28",
     },
-    {
-        "name": "Tiny YOLO v4",
-        "slug": "tinyyolov4",
-        "module_name": "openvino_yolov4_tiny",
-        "url": "https://modelplace.ai/models/32",
-    },
+    #{
+    #    # Doesn't work with OpenVINO 2021.4
+    #    "name": "Tiny YOLO v4",
+    #    "slug": "tinyyolov4",
+    #    "module_name": "openvino_yolov4_tiny",
+    #    "url": "https://modelplace.ai/models/32",
+    #},
 ]
 # fmt: on
 
