@@ -1,4 +1,5 @@
-FROM openvino/ubuntu20_runtime:2021.4.1 AS builder
+### Builder container
+FROM openvino/ubuntu20_runtime:2021.4 AS builder
 
 WORKDIR /home/openvino
 ADD --chown=openvino requirements-frozen.txt ./
@@ -9,19 +10,15 @@ RUN \
   pip3 install -r requirements-frozen.txt && \
   rm -rf $HOME/.cache
 
-ADD --chown=openvino packages packages
 ADD --chown=openvino pareido/known_models.py pareido/
 RUN \
   source venv/bin/activate && \
-  for MODEL in $(python pareido/known_models.py); \
-  do \
-    pip3 install packages/${MODEL}-*.whl || true; \
-  done && \
-  rm -rf $HOME/packages
+  pip3 install $(python pareido/known_models.py) \
+    -f https://modelplace.s3.amazonaws.com/index.html \
+    -f https://download.pytorch.org/whl/torch_stable.html
 
-
-###
-FROM openvino/ubuntu20_runtime:2021.4.1
+### Target container
+FROM openvino/ubuntu20_runtime:2021.4
 
 MAINTAINER Michael Ludvig (https://github.com/mludvig)
 
