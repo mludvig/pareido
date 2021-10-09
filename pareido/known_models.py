@@ -48,7 +48,7 @@ known_models = [
     ## General object detection
     {
         "name": "Faster R-CNN ResNet-50",
-        "slug": "fasterrcnn",
+        "slug": "fastercnn",
         "module_name": "pytorch_fastercnn",
         "url": "https://modelplace.ai/models/2",
         "note": "pip3 install pytorch_fastercnn/torch_stable.html",
