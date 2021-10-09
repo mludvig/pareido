@@ -39,7 +39,7 @@ def load_models():
             logger.info(f"Loaded model: {model['name']} [{model['slug']}]")
         except ModuleNotFoundError as e:
             logger.warning(
-                f"Ignored model: {model['name']} [module '{e.name}' not found]"
+                f"Ignored model: {model['name']} [{model['slug']}] - module '{e.name}' not found"
             )
 
 
@@ -49,9 +49,24 @@ def get_active_models():
             "slug": models[model_slug]["slug"],
             "name": models[model_slug]["name"],
             "url": models[model_slug]["url"],
+            "active": True,
         }
         for model_slug in models.keys()
     ]
+
+
+def get_all_models():
+    all_models = []
+    for model in known_models:
+        all_models.append(
+            {
+                "slug": model["slug"],
+                "name": model["name"],
+                "url": model["url"],
+                "active": model["slug"] in models,
+            }
+        )
+    return all_models
 
 
 def detect(model_slug, image):
